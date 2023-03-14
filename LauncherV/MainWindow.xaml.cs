@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Media;
+using System.Net;
 using System.Security.Principal;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +15,8 @@ namespace LauncherV
     public partial class MainWindow : Window
     {
         string launcherVersion = "1.0.0";
+        string onlineVerLink = "https://raw.githubusercontent.com/KilLo445/LauncherV/master/version.txt";
+        string updateDL = "https://github.com/KilLo445/LauncherV/releases/latest";
 
         // Paths
         private string rootPath;
@@ -63,7 +66,36 @@ namespace LauncherV
 
         private void Window_ContentRendered(object sender, EventArgs e)
         {
+            CheckForUpdates();
+        }
 
+        private void CheckForUpdates()
+        {
+            Version localVersion = new Version(launcherVersion);
+
+            try
+            {
+                WebClient webClient = new WebClient();
+                Version onlineVersion = new Version(webClient.DownloadString(onlineVerLink));
+
+                if (onlineVersion.IsDifferentThan(localVersion))
+                {
+                    MessageBoxResult updateGUI = MessageBox.Show("An update for LauncherV has been found.\n\nWould you like to download it?", "Update found", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (updateGUI == MessageBoxResult.Yes)
+                    {
+                        try
+                        {
+                            Process.Start(updateDL);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"{ex}");
+                            return;
+                        }
+                    }
+                }
+            }
+            catch { }
         }
 
         private void CreateTemp()
@@ -516,5 +548,65 @@ namespace LauncherV
                 catch (Exception ex) { MessageBox.Show($"{ex}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
             }
         }
+
+        struct Version
+        {
+            internal static Version zero = new Version(0, 0, 0);
+
+            private short major;
+            private short minor;
+            private short subMinor;
+
+            internal Version(short _major, short _minor, short _subMinor)
+            {
+                major = _major;
+                minor = _minor;
+                subMinor = _subMinor;
+            }
+            internal Version(string _version)
+            {
+                string[] versionStrings = _version.Split('.');
+                if (versionStrings.Length != 3)
+                {
+                    major = 0;
+                    minor = 0;
+                    subMinor = 0;
+                    return;
+                }
+
+                major = short.Parse(versionStrings[0]);
+                minor = short.Parse(versionStrings[1]);
+                subMinor = short.Parse(versionStrings[2]);
+            }
+
+            internal bool IsDifferentThan(Version _otherVersion)
+            {
+                if (major != _otherVersion.major)
+                {
+                    return true;
+                }
+                else
+                {
+                    if (minor != _otherVersion.minor)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        if (subMinor != _otherVersion.subMinor)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            public override string ToString()
+            {
+                return $"{major}.{minor}.{subMinor}";
+            }
+        }
+
     }
 }
