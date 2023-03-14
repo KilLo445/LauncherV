@@ -29,7 +29,7 @@
             </Image.ContextMenu>
         </Image>
 
-            <Button Name="BackupMods" Content="Backup Mods" Click="BackupMods_Click" Width="100" Height="50" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,120,120"/>
+        <Button Name="BackupMods" Content="Backup Mods" Click="BackupMods_Click" Width="100" Height="50" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,120,120"/>
         <Button Name="RestoreMods" Content="Restore Mods" Click="RestoreMods_Click" Width="100" Height="50" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="120,0,0,120"/>
         <Button Name="PlayGTA5" Content="Play GTA V" Click="PlayGTA5_Click" Width="100" Height="50" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,50">
             <Button.ContextMenu>
@@ -42,6 +42,7 @@
             </Button.ContextMenu>
         </Button>
 
+        <TextBlock Name="VersionText" Text="" Foreground="White" FontSize="15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5" FontFamily="/Fonts/#Roboto" FontWeight="Light"/>
         <ProgressBar Name="pb" Width="250" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Center" Visibility="Hidden" Margin="0,0,0,15"/>
     </Grid>
 </Window>

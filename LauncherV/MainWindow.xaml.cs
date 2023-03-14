@@ -52,6 +52,8 @@ namespace LauncherV
             tempPath = Path.GetTempPath();
             vTemp = Path.Combine(tempPath, "LauncherV");
 
+            VersionText.Text = $"v{launcherVersion}";
+
             CreateReg();
             FirstRun();
             GetCFG();

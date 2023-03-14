@@ -99,7 +99,7 @@
     <None Include="Fonts\Roboto\Roboto-Bold.ttf" />
     <None Include="Fonts\Roboto\Roboto-BoldItalic.ttf" />
     <None Include="Fonts\Roboto\Roboto-Italic.ttf" />
-    <None Include="Fonts\Roboto\Roboto-Light.ttf" />
+    <Resource Include="Fonts\Roboto\Roboto-Light.ttf" />
     <None Include="Fonts\Roboto\Roboto-LightItalic.ttf" />
     <None Include="Fonts\Roboto\Roboto-Medium.ttf" />
     <None Include="Fonts\Roboto\Roboto-MediumItalic.ttf" />
