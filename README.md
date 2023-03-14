@@ -6,6 +6,9 @@ It currently just removes the main loader mods (ScriptHookV, OpenIV/ASILoader), 
 The intention of this tool is just to prevent mods from loading into GTA V, so no mods should be loaded after you select "Backup Mods".  
   
 ## Download
+### Auto Installer
+[Download](https://github.com/KilLo445/LauncherV/releases/tag/installer)
+### Manual Install
 [Release Page](https://github.com/KilLo445/LauncherV/releases/latest)  
 [Direct Download](https://github.com/KilLo445/LauncherV/releases/latest/download/LauncherV.zip)  
 ## Building
