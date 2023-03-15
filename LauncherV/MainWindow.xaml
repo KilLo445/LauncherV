@@ -21,6 +21,10 @@
                 <ContextMenu Name="settingsCM">
                     <MenuItem Name="ChangePath" Header="Change GTA V Path"
                               Click="ChangePath_Click"/>
+                    <MenuItem Name="OpenPathGame" Header="Open GTA V Folder"
+                              Click="OpenPathGame_Click"/>
+                    <MenuItem Name="OpenPathBackup" Header="Open Backup Folder"
+                              Click="OpenPathBackup_Click"/>
                     <MenuItem Name="DeleteMods" Header="Delete Backed Up Mods"
                               Click="DeleteMods_Click"/>
                     <MenuItem Name="ResetLauncherV" Header="Reset LauncherV"

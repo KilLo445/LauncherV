@@ -14,7 +14,7 @@ namespace LauncherV
 {
     public partial class MainWindow : Window
     {
-        string launcherVersion = "1.0.0";
+        string launcherVersion = "1.0.1";
         string onlineVerLink = "https://raw.githubusercontent.com/KilLo445/LauncherV/master/version.txt";
         string updateDL = "https://github.com/KilLo445/LauncherV/releases/latest";
 
@@ -25,7 +25,6 @@ namespace LauncherV
         private string vModsBackup;
 
         private string gamePath;
-
         private string steamPath;
 
         // Files
@@ -43,6 +42,31 @@ namespace LauncherV
             var principal = new WindowsPrincipal(identity);
             return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
+
+        // Supported Mods
+
+        // Mod Files (.dll, .asi, etc)
+        string[] modFiles = {
+            "dinput8.dll",
+            "ScriptHookV.dll",
+            "ScriptHookVDotNet.asi",
+            "ScriptHookVDotNet.ini",
+            "ScriptHookVDotNet2.dll",
+            "ScriptHookVDotNet2.xml",
+            "ScriptHookVDotNet3.dll",
+            "ScriptHookVDotNet3.xml",
+            "OpenIV.asi",
+            "NativeTrainer.asi",
+            "TrainerV.asi",
+            "trainerv.ini",
+            "Menyoo.asi",
+        };
+
+        // Mod Folders (OpenIV Mods, etc)
+        string[] modFolders = {
+            "mods",
+            "menyooStuff"
+        };
 
         public MainWindow()
         {
@@ -358,68 +382,68 @@ namespace LauncherV
             LaunchGTAV();
         }
 
+        private void MoveFile(string source, string dest)
+        {
+            if (File.Exists(source))
+            {
+                try
+                {
+                    File.Move(source, dest);
+                }
+                catch (Exception ex) { MessageBox.Show($"{ex}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            }
+        }
+
+        private void MoveFolder(string source, string dest)
+        {
+            if (Directory.Exists(source))
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(dest);
+                if (dirInfo.Exists == false) { Directory.CreateDirectory(dest); }
+                DirectoryInfo dir = new DirectoryInfo(source);
+                DirectoryInfo[] dirs = dir.GetDirectories();
+                string[] files = Directory.GetFiles(source);
+                foreach (string file in files)
+                {
+                    try
+                    {
+                        string name = Path.GetFileName(file);
+                        string destFile = Path.Combine(dest, name);
+                        if (name != "file") File.Move(file, destFile);
+                    }
+                    catch (Exception ex) { MessageBox.Show($"{ex}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+                }
+                foreach (DirectoryInfo subdir in dirs)
+                {
+                    string temppath = Path.Combine(dest, subdir.Name);
+                    if (!Directory.Exists(temppath))
+                        try
+                        {
+                            Directory.Move(subdir.FullName, temppath);
+                        }
+                        catch (Exception ex) { MessageBox.Show($"{ex}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+                }
+                Directory.Delete(source);
+            }
+        }
+
         private void BackupMods_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 bool backupMods1 = false;
 
-                string dinput8dll1 = $"{gamePath}" + "\\dinput8.dll";
-                string dinput8dll2 = $"{vModsBackup}" + "\\dinput8.dll";
-                string OpenIVasi1 = $"{gamePath}" + "\\OpenIV.asi";
-                string OpenIVasi2 = $"{vModsBackup}" + "\\OpenIV.asi";
-                string ScriptHookVdll1 = $"{gamePath}" + "\\ScriptHookV.dll";
-                string ScriptHookVdll2 = $"{vModsBackup}" + "\\ScriptHookV.dll";
-
                 try
                 {
-                    if (File.Exists(dinput8dll1))
+                    foreach (string i in modFiles)
                     {
-                        File.Move(dinput8dll1, dinput8dll2);
+                        MoveFile($"{gamePath}\\{i}", $"{vModsBackup}\\{i}");
                     }
-                    if (File.Exists(OpenIVasi1))
+                    foreach (string i in modFolders)
                     {
-                        File.Move(OpenIVasi1, OpenIVasi2);
-                    }
-                    if (File.Exists(ScriptHookVdll1))
-                    {
-                        File.Move(ScriptHookVdll1, ScriptHookVdll2);
+                        MoveFolder($"{gamePath}\\{i}", $"{vModsBackup}\\{i}");
                     }
 
-
-                    // Move "mods" folder
-                    string source = $"{gamePath}" + "\\mods";
-                    string dest = $"{vModsBackup}" + "\\mods";
-
-                    if (Directory.Exists(source))
-                    {
-                        DirectoryInfo dirInfo = new DirectoryInfo(dest);
-                        if (dirInfo.Exists == false) { Directory.CreateDirectory(dest); }
-                        DirectoryInfo dir = new DirectoryInfo(source);
-                        DirectoryInfo[] dirs = dir.GetDirectories();
-                        string[] files = Directory.GetFiles(source);
-                        foreach (string file in files)
-                        {
-                            try
-                            {
-                                string name = Path.GetFileName(file);
-                                string destFile = Path.Combine(dest, name);
-                                if (name != "file") File.Move(file, destFile);
-                            }
-                            catch (Exception ex) { MessageBox.Show($"{ex}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
-                        }
-                        foreach (DirectoryInfo subdir in dirs)
-                        {
-                            string temppath = Path.Combine(dest, subdir.Name);
-                            if (!Directory.Exists(temppath))
-                                try
-                                {
-                                    Directory.Move(subdir.FullName, temppath);
-                                }
-                                catch (Exception ex) { MessageBox.Show($"{ex}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
-                        }
-                        Directory.Delete(source);
-                    }
                     backupMods1 = true;
                 }
                 catch (Exception ex) { MessageBox.Show($"{ex}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
@@ -436,30 +460,13 @@ namespace LauncherV
         {
             try
             {
-                DirectoryInfo dirInfo = new DirectoryInfo(gamePath);
-                if (dirInfo.Exists == false) { Directory.CreateDirectory(gamePath); }
-                DirectoryInfo dir = new DirectoryInfo(vModsBackup);
-                DirectoryInfo[] dirs = dir.GetDirectories();
-                string[] files = Directory.GetFiles(vModsBackup);
-                foreach (string file in files)
+                foreach (string i in modFiles)
                 {
-                    try
-                    {
-                        string name = Path.GetFileName(file);
-                        string destFile = Path.Combine(gamePath, name);
-                        if (name != "file") File.Move(file, destFile);
-                    }
-                    catch (Exception ex) { MessageBox.Show($"{ex}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+                    MoveFile($"{vModsBackup}\\{i}", $"{gamePath}\\{i}");
                 }
-                foreach (DirectoryInfo subdir in dirs)
+                foreach (string i in modFolders)
                 {
-                    string temppath = Path.Combine(gamePath, subdir.Name);
-                    if (!Directory.Exists(temppath))
-                        try
-                        {
-                            Directory.Move(subdir.FullName, temppath);
-                        }
-                        catch (Exception ex) { MessageBox.Show($"{ex}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+                    MoveFolder($"{vModsBackup}\\{i}", $"{gamePath}\\{i}");
                 }
                 MessageBox.Show("Mods successfully restored!", "LauncherV", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -518,6 +525,24 @@ namespace LauncherV
                     keyV.Close();
                 }
             }
+        }
+
+        private void OpenPathGame_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start(gamePath);
+            }
+            catch (Exception ex) { MessageBox.Show($"{ex}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        }
+
+        private void OpenPathBackup_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start(vModsBackup);
+            }
+            catch (Exception ex) { MessageBox.Show($"{ex}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private void DeleteMods_Click(object sender, RoutedEventArgs e)
@@ -609,6 +634,5 @@ namespace LauncherV
                 return $"{major}.{minor}.{subMinor}";
             }
         }
-
     }
 }
