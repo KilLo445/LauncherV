@@ -13,4 +13,4 @@ The intention of this tool is just to prevent mods from loading into GTA V, so n
 [Direct Download](https://github.com/KilLo445/LauncherV/releases/latest/download/LauncherV.zip)  
 ## Building
 To build LauncherV from source, download the [master zip](https://github.com/KilLo445/LauncherV/archive/refs/heads/master.zip) and open "LauncherV.sln" in Visual Studio 2022, then go to Build -> Build LauncherV.  
-.NET Desktop Development is required from the Visual Studio Installer.
+[.NET Desktop Development](https://visualstudio.microsoft.com/vs/features/net-development/) is required from the [Visual Studio Installer](https://learn.microsoft.com/en-us/visualstudio/install/modify-visual-studio?view=vs-2022).
